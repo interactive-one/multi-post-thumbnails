@@ -156,7 +156,7 @@ if (!class_exists('MultiPostThumbnails')) {
 				return $form_fields;
 
 			$ajax_nonce = wp_create_nonce("set_post_thumbnail-{$this->post_type}-{$this->id}-{$calling_post_id}");
-			$link = sprintf('<a id="%4$s-%1$s-thumbnail-%2$s" class="%1$s-thumbnail" href="#" onclick="MultiPostThumbnails.setAsThumbnail(\'%2$s\', \'%1$s\', \'%4$s\', \'%5$s\');return false;">' . __( 'Set as %3$s', 'multiple-post-thumbnails' ) . '</a>', $this->id, $post->ID, $this->label, $this->post_type, $ajax_nonce);
+			$link = sprintf('<a id="%4$s-%1$s-thumbnail-%2$s" class="%1$s-thumbnail" href="#" onclick="MultiPostThumbnails.setAsThumbnail(\'%2$s\', \'%1$s\', \'%4$s\', \'%5$s\');return false;">' . __( 'Set as %3$s', 'multiple-post-thumbnails' ) . '</a>', esc_js( $this->id ), esc_js( $post->ID ), esc_html( $this->label ), esc_js( $this->post_type ), esc_js( $ajax_nonce ) );
 			$form_fields["{$this->post_type}-{$this->id}-thumbnail"] = array(
 				'label' => $this->label,
 				'input' => 'html',
@@ -187,7 +187,7 @@ if (!class_exists('MultiPostThumbnails')) {
 		}
 		
 		public function admin_header_scripts() {
-			$post_id = get_the_ID();
+			$post_id = esc_js( get_the_ID() );
 			echo "<script>var post_id = $post_id;</script>";
 		}
 
@@ -384,7 +384,7 @@ if (!class_exists('MultiPostThumbnails')) {
 							MultiPostThumbnails.setAsThumbnail(attachment.id, "%2$s", "%1$s", "%4$s");
 						}
 					});',
-					$this->post_type, $this->id, md5($this->id), $ajax_nonce
+					esc_js( $this->post_type ), esc_js( $this->id ), md5($this->id), esc_js( $ajax_nonce )
 				);
 			}
 			$format_string = '<p class="hide-if-no-js"><a title="%1$s" href="%2$s" id="set-%3$s-%4$s-thumbnail" class="%5$s" data-thumbnail_id="%7$s" data-uploader_title="%1$s" data-uploader_button_text="%1$s">%%s</a></p>';
@@ -401,7 +401,7 @@ if (!class_exists('MultiPostThumbnails')) {
 				if (!empty($thumbnail_html)) {
 					$content = sprintf($set_thumbnail_link, $thumbnail_html);
 					$format_string = '<p class="hide-if-no-js"><a href="#" id="remove-%1$s-%2$s-thumbnail" onclick="MultiPostThumbnails.removeThumbnail(\'%2$s\', \'%1$s\', \'%4$s\');return false;">%3$s</a></p>';
-					$content .= sprintf( $format_string, $this->post_type, $this->id, sprintf( esc_html__( "Remove %s", 'multiple-post-thumbnails' ), $this->label ), $ajax_nonce );
+					$content .= sprintf( $format_string, esc_js( $this->post_type ), esc_js( $this->id ), sprintf( esc_html__( "Remove %s", 'multiple-post-thumbnails' ), $this->label ), $ajax_nonce );
 				}
 				$content_width = $old_content_width;
 			}
